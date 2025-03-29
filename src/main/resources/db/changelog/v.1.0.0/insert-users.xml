@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet logicalFilePath="insert-users"
+               id="insert-users" author="samlex">
+        <insert tableName="users">
+            <column  name="firstName"  value="Alex"/>
+            <column  name="lastName"  value="Bloch"/>
+            <column  name="phoneNumber"  value="+78903574322"/>
+            <column name="company" value="Avitek"/>
+        </insert>
+        <insert tableName="users">
+            <column  name="firstName"  value="Dande"/>
+            <column  name="lastName"  value="Mox"/>
+            <column  name="phoneNumber"  value="+79003554322"/>
+            <column name="company" value="Norbit"/>
+        </insert>
+        <insert tableName="users">
+            <column  name="firstName"  value="Alex"/>
+            <column  name="lastName"  value="Bloch"/>
+            <column  name="phoneNumber"  value="+78903574322"/>
+            <column name="company" value="Avitek"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
