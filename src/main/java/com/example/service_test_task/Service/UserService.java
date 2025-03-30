@@ -30,7 +30,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         UserResponseDto userDto = USER_MAPPER.toDto(user);
-        userDto.setCompany(COMPANY_CLIENT.getCompanyById(userId));
+        userDto.setCompany(COMPANY_CLIENT.getCompanyById(userId));//make http request, although we could simply take the company from the user
         return userDto;
     }
 
