@@ -3,26 +3,18 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
-    <changeSet logicalFilePath="2023-05-12-1-create-table-book"
-               id="2023-05-12-1-create-table-book" author="s.m">
-        <createTable tableName="users">
+    <changeSet logicalFilePath="create-table-company"
+               id="2023-05-12-2-create-table-company" author="s.m">
+        <createTable tableName="company">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="firstName" type="varchar(100)">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="lastName" type="varchar(100)">
+            <column name="budget" type="bigint">
                 <constraints nullable="false"/>
-            </column>
-            <column name="phoneNumber" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="company_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_users_company" references="company(id)"/>
             </column>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>

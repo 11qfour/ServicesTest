@@ -3,10 +3,7 @@ package com.example.service_test_task.Mapper;
 import com.example.service_test_task.DTO.CompanyRequestDto;
 import com.example.service_test_task.DTO.CompanyResponseDto;
 import com.example.service_test_task.Entity.Company;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -19,4 +16,7 @@ public interface CompanyMapper {
     CompanyResponseDto toDto(Company company);
 
     List<CompanyResponseDto> toDtoList(List<Company> companies);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateCompanyFromDto(CompanyRequestDto dto, @MappingTarget Company company);
 }

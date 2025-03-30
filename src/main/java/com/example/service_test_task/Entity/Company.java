@@ -24,6 +24,7 @@ public class Company {
     private Long budget;
 
     @Transient
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> employees = new HashSet<>();
 
     @JsonIgnore

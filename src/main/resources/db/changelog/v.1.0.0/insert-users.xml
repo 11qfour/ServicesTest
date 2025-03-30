@@ -5,26 +5,43 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet logicalFilePath="insert-users"
-               id="insert-users" author="samlex">
+               id="insert-users" author="s.m">
         <insert tableName="users">
-            <column  name="firstName"  value="Alex"/>
-            <column  name="lastName"  value="Bloch"/>
-            <column  name="phoneNumber"  value="+78903574322"/>
-            <column name="company" value="Avitek"/>
+            <column name="firstName" value="Alex"/>
+            <column name="lastName" value="Bloch"/>
+            <column name="phoneNumber" value="+78903574322"/>
+            <column name="company_id" value="1"/>
         </insert>
         <insert tableName="users">
-            <column  name="firstName"  value="Dande"/>
-            <column  name="lastName"  value="Mox"/>
-            <column  name="phoneNumber"  value="+79003554322"/>
-            <column name="company" value="Norbit"/>
+            <column name="firstName" value="Dande"/>
+            <column name="lastName" value="Mox"/>
+            <column name="phoneNumber" value="+79003554322"/>
+            <column name="company_id" value="2"/>
         </insert>
         <insert tableName="users">
-            <column  name="firstName"  value="Alex"/>
-            <column  name="lastName"  value="Bloch"/>
-            <column  name="phoneNumber"  value="+78903574322"/>
-            <column name="company" value="Avitek"/>
+            <column name="firstName" value="Alex"/>
+            <column name="lastName" value="Dlock"/>
+            <column name="phoneNumber" value="+78783574322"/>
+            <column name="company_id" value="1"/>
         </insert>
-
+        <insert tableName="users">
+            <column name="firstName" value="Stepan"/>
+            <column name="lastName" value="Razin"/>
+            <column name="phoneNumber" value="+78783574322"/>
+            <column name="company_id" value="3"/>
+        </insert>
+        <insert tableName="users">
+            <column name="firstName" value="Anna"/>
+            <column name="lastName" value="Shuskova"/>
+            <column name="phoneNumber" value="+78785743122"/>
+            <column name="company_id" value="2"/>
+        </insert>
+        <insert tableName="users">
+            <column name="firstName" value="Kristina"/>
+            <column name="lastName" value="Okun"/>
+            <column name="phoneNumber" value="+78583544322"/>
+            <column name="company_id" value="2"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

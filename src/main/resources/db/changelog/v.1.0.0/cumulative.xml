@@ -6,5 +6,6 @@
 
     <include file="create-table-user.xml" relativeToChangelogFile="true" />
     <include file="insert-users.xml" relativeToChangelogFile="true" />
-
+    <include file="create-table-company.xml" relativeToChangelogFile="true" />
+    <include file="insert-companies.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
