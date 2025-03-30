@@ -1,7 +1,6 @@
 package com.example.service_test_task.Service;
 
 import com.example.service_test_task.Client.CompanyClient;
-import com.example.service_test_task.DTO.CompanyResponseDto;
 import com.example.service_test_task.DTO.UserRequestDto;
 import com.example.service_test_task.DTO.UserResponseDto;
 import com.example.service_test_task.Entity.User;
@@ -10,9 +9,7 @@ import com.example.service_test_task.Mapper.UserMapper;
 import com.example.service_test_task.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
