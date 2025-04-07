@@ -1,7 +1,7 @@
 package com.example.companyService.Client;
 
 
-import com.example.service_test_task.DTO.UserResponseDto;
+import com.example.service_test_task.DTO.UserResponseFromCompanyDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

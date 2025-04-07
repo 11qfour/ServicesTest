@@ -63,6 +63,9 @@ public class CompanyService {
     }
 
     public CompanyResponseDto create(CompanyRequestDto companyRequestDto){
+        if((companyRequestDto.getBudget()==null)||(companyRequestDto.getName()==null)){
+            throw new ResourceNotFoundException("Any field's will be empty");
+        }
         Company company = companyMapper.toEntity(companyRequestDto);
         var newCompany = companyRepository.save(company);
         return companyMapper.toDto(newCompany);

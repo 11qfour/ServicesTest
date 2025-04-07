@@ -28,10 +28,6 @@ public class Company {
     @Column(nullable = false)
     private Long budget;
 
-    @Transient
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserResponseDto> employees = new HashSet<>();
-
     @JsonIgnore
     public Long getId() {
         return id;
