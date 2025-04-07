@@ -1,18 +1,118 @@
-version: '3.1'
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    restart: "no"
+    ports:
+      - "${EUREKA_PORT:-8761}:${EUREKA_PORT:-8761}"
+    environment:
+      EUREKA_PORT: ${EUREKA_PORT:-8761}
+      EUREKA_HOST: ${EUREKA_HOST:-localhost}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://${EUREKA_HOST:-eureka-server}:${EUREKA_PORT:-8761}/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
+  config-server:
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+    restart: "no"
+    environment:
+      CONFIG_PORT: ${CONFIG_PORT:-8888}
+      EUREKA_HOST: ${EUREKA_HOST:-localhost}
+      EUREKA_PORT: ${EUREKA_PORT:-8761}
+    depends_on:
+      - eureka-server
+    ports:
+      - "${CONFIG_PORT:-8888}:${CONFIG_PORT:-8888}"
+    networks:
+      - app-network
+
+  postgres-user-db:
+    image: postgres:17-alpine
+    restart: "no"
+    environment:
+      POSTGRES_DB: ${USER_DB_DBNAME:-user_db}
+      POSTGRES_USER: ${USER_DB_USERNAME:-user}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD:-pass}
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    restart: "no"
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+    environment:
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT:-8081}
+      EUREKA_HOST: ${EUREKA_HOST:-eureka-server}
+      EUREKA_PORT: ${EUREKA_PORT:-8761}
+
+      USER_DB_HOST: ${USER_DB_HOST:-postgres-user-db}
+      USER_DB_PORT: ${USER_DB_PORT:-5432}
+      USER_DB_DBNAME: ${USER_DB_DBNAME:-user_db}
+      USER_DB_USERNAME: ${USER_DB_USERNAME:-user}
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD:-pass}
+    depends_on:
+      - postgres-user-db
+      - eureka-server
+      - company-service
+    ports:
+      - "${USER_SERVICE_PORT:-8081}:${USER_SERVICE_PORT:-8081}"
+    networks:
+      - app-network
+
+  postgres-company-db:
+    image: postgres:17-alpine
+    restart: "no"
+    volumes:
+      - postgres_company_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${COMPANY_DB_DBNAME:-company_db}
+      POSTGRES_USER: ${COMPANY_DB_USERNAME:-user}
+      POSTGRES_PASSWORD: ${COMPANY_DB_PASSWORD:-pass}
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+
+  company-service:
+    build:
+      context: .
+      dockerfile: company-service/Dockerfile
+    restart: "no"
+    environment:
+      COMPANY_SERVICE_PORT: ${COMPANY_SERVICE_PORT:-8082}
+      EUREKA_HOST: ${EUREKA_HOST:-eureka-server}
+      EUREKA_PORT: ${EUREKA_PORT:-8761}
+
+      COMPANY_DB_HOST: ${COMPANY_DB_HOST:-postgres-company-db}
+      COMPANY_DB_PORT: ${COMPANY_DB_PORT:-5433}
+      COMPANY_DB_DBNAME: ${COMPANY_DB_DBNAME:-company_db}
+      COMPANY_DB_USERNAME: ${COMPANY_DB_USERNAME:-user}
+      COMPANY_DB_PASSWORD: ${USER_DB_PASSWORD:-pass}
+    depends_on:
+      - postgres-company-db
+      - config-server
+      - eureka-server
+    ports:
+      - "${COMPANY_SERVICE_PORT:-8082}:${COMPANY_SERVICE_PORT:-8082}"
+    networks:
+      - app-network
 
 volumes:
-  pg_company:
-
-services:
-  company_db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: company_db
-    volumes:
-      - pg_company:/var/lib/postgresql/data
-
-    ports:
-      - "127.0.0.1:5433:5432"
+  postgres_user_data:
+  postgres_company_data:
+networks:
+  app-network:
+    driver: bridge
