@@ -11,5 +11,5 @@ public class CompanyResponseDto {
     private Long id;
     private String name;
     private Long budget;
-    private List<UserResponseDto> employees;
+    private List<UserResponseFromCompanyDto> employees;
 }
