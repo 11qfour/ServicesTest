@@ -1,9 +1,11 @@
-FROM bellsoft/liberica-openjdk-debian:23.0.1
+FROM maven:3.9-eclipse-temurin-21 AS build
 
-WORKDIR /application
+WORKDIR /app
 COPY . .
-RUN chmod +x mvnw && ./mvnw clean install -Dmaven.test.skip && \
-    mv /application/target/*.jar /app.jar && \
-    rm -rf /application
+RUN mvn clean package -pl user-service -am -DskipTests
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM eclipse-temurin:21-jre-jammy
+
+COPY --from=build /app/user-service/target/*.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

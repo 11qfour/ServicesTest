@@ -8,7 +8,7 @@ import com.example.userService.Exception.ResourceNotFoundException;
 import com.example.userService.Mapper.UserMapper;
 import com.example.userService.Repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,10 +32,18 @@ public class UserService {
     }
 
     public List<UserResponseDto> getAllUsers(){
-        return userRepository.findAll().stream().map(userMapper::toDto).toList();
+        return userRepository.findAll().stream()
+                .map(user -> {
+                    UserResponseDto dto = userMapper.toDto(user);
+                    if (user.getCompanyId() != null) {
+                        dto.setCompany(companyClient.getCompanyById(user.getCompanyId()));
+                    }
+                    return dto;
+                })
+                .toList();
     }
 
-    public UserResponseDto updateUser(Long userId, UserRequestDto userRequestDto){
+    public UserResponseDto updateUser(Long userId, UserRequestDto userRequestDto){ //if any field's is empty it willnot be changed
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
         userMapper.updateUserFromDto(userRequestDto,user);
@@ -51,6 +59,21 @@ public class UserService {
     }
 
     public UserResponseDto create(UserRequestDto userRequestDto){
+        if (userRequestDto.getCompanyId() != null) {
+            try {
+                companyClient.getCompanyById(userRequestDto.getCompanyId());
+            } catch (Exception ex) {
+                throw new ResourceNotFoundException("Company does not exist");
+            }
+        }
+        else{
+            throw new ResourceNotFoundException("Company's Id isEmpty");
+        }
+
+        if((userRequestDto.getLastName()==null)||(userRequestDto.getFirstName()==null)||(userRequestDto.getPhoneNumber())==null){
+            throw new ResourceNotFoundException("Any field's will be empty");
+        }
+
         User user = userMapper.toEntity((userRequestDto));
         var newUser = userRepository.save(user);
         return userMapper.toDto(newUser);

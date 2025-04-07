@@ -1,3 +1,6 @@
+server:
+  port: ${USER_SERVICE_PORT:8081}
+
 spring:
   application:
     name: user-service
@@ -8,10 +11,20 @@ spring:
       discovery:
         service-id: config-server
         enabled: true
+  datasource:
+    url: jdbc:postgresql://${USER_DB_HOST:localhost}:${USER_DB_PORT:5432}/${USER_DB_DBNAME:user_db}
+    username: ${USER_DB_USERNAME:user}
+    password: ${USER_DB_PASSWORD:pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:eureka-server}:${EUREKA_PORT:8761}/eureka/
   instance:
     preferIpAddress: true

@@ -1,8 +1,9 @@
-# Ignore everything by default
+# Игнорировать всё по умолчанию
 *
 
-# Include what we need
-!src
-!.mvn
+# Включить только необходимое для userService
+!**/src/
+!**/pom.xml
+!.mvn/
 !pom.xml
 !mvnw
