@@ -7,7 +7,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 
 @Configuration
 public class GatewayConfig {
-    /*@Bean
+    @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("user-service", r -> r
@@ -19,5 +19,5 @@ public class GatewayConfig {
                         .uri("lb://COMPANY-SERVICE"))
 
                 .build();
-    }*/
+    }
 }

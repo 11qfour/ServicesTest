@@ -1,11 +1,9 @@
 server:
-  port: 8081
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5435/user_db
-    username: user
-    password: pass
+    url: jdbc:postgresql://${USER_DB_HOST:localhost}:${USER_DB_PORT:5433}/${USER_DB_DBNAME:user_db}
+    username: ${USER_DB_USERNAME:user}
+    password: ${USER_DB_PASSWORD:pass}
   jpa:
     hibernate:
       ddl-auto: none

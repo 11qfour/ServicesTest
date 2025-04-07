@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${COMPANY_DB_HOST:localhost}:${COMPANY_DB_PORT:5434}/${COMPANY_DB_DBNAME:company_db}
+    username: ${COMPANY_DB_USERNAME:user}
+    password: ${COMPANY_DB_PASSWORD:pass}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
