@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 
-@FeignClient(name = "user-service", contextId = "userClient", configuration =  UserFeignLogger.class,path = "/api", fallback = UserClientFallback.class)
+@FeignClient(name = "user-service", contextId = "userClient", configuration =  UserFeignLogger.class, path = "/api", fallback = UserClientFallback.class)
 public interface UserClient {
     @GetMapping("/users/company/{companyId}")
     List<UserResponseFromCompanyDto> getUsersByCompany(@PathVariable Long companyId); //во избежание зацикливания, особая форма UserDTO
