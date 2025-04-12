@@ -53,7 +53,7 @@
         <module>common-dto</module>
         <module>user-service</module>
         <module>company-service</module>
-        <!--        <module>api_gateway</module>-->
+        <module>api-gateway</module>
         <module>config-server</module>
         <module>eureka-server</module>
     </modules>
