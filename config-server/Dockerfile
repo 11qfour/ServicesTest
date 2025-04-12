@@ -8,4 +8,4 @@ FROM eclipse-temurin:21-jre-jammy
 
 COPY --from=build /app/config-server/target/*.jar /app/app.jar
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
