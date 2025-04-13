@@ -20,15 +20,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  logging:
-    level:
-      org.springframework.web: DEBUG
-      feign: DEBUG
-
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${EUREKA_HOST:eureka-server}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: http://${EUREKA_HOST:eureka-serve}:${EUREKA_PORT:8761}/eureka/
   instance:
     preferIpAddress: true
 

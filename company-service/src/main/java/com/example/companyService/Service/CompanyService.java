@@ -2,6 +2,7 @@ package com.example.companyService.Service;
 
 
 import com.example.companyService.Client.UserClient;
+import com.example.companyService.Client.UserFeignLogger;
 import com.example.companyService.Entity.Company;
 import com.example.companyService.Exception.ResourceNotFoundException;
 import com.example.companyService.Mapper.CompanyMapper;
@@ -12,8 +13,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
-
+    private static final Logger logger = LoggerFactory.getLogger(UserFeignLogger.class);
     private final UserClient userClient;
 
     public CompanyResponseDto getCompanyById(Long companyId) {
@@ -29,7 +33,12 @@ public class CompanyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
 
         CompanyResponseDto companyDto = companyMapper.toDto(company);
-        companyDto.setEmployees(userClient.getUsersByCompany(companyId));
+        try {
+            companyDto.setEmployees(userClient.getUsersByCompany(companyId));
+        } catch (Exception e) {
+            logger.error("Failed to fetch users from user-service for company {}", companyId, e);
+            companyDto.setEmployees(Collections.emptyList()); // fallback
+        }
         return companyDto;
     }
 
@@ -56,8 +65,12 @@ public class CompanyService {
         if (!companyRepository.existsById(companyId)){
             throw new ResourceNotFoundException("Company not found");
         }
-        // Удаление сотрудников
-        userClient.deleteUsersByCompany(companyId);
+
+        try {
+            userClient.deleteUsersByCompany(companyId);
+        } catch (Exception e) {
+            logger.warn("Could not delete users from user-service for company {}", companyId, e);
+        }
 
         companyRepository.deleteById(companyId);
     }
