@@ -8,7 +8,7 @@ services:
       - "${EUREKA_PORT:-8761}:${EUREKA_PORT:-8761}"
     environment:
       EUREKA_PORT: ${EUREKA_PORT:-8761}
-      EUREKA_HOST: ${EUREKA_HOST:-localhost}
+      EUREKA_HOST: ${EUREKA_HOST:-eureka-server}
     networks:
       - app-network
     healthcheck:
@@ -25,7 +25,7 @@ services:
     restart: "no"
     environment:
       CONFIG_PORT: ${CONFIG_PORT:-8888}
-      EUREKA_HOST: ${EUREKA_HOST:-localhost}
+      EUREKA_HOST: ${EUREKA_HOST:-eureka-server}
       EUREKA_PORT: ${EUREKA_PORT:-8761}
     depends_on:
       - eureka-server
@@ -59,9 +59,14 @@ services:
       POSTGRES_USER: ${USER_DB_USERNAME:-user}
       POSTGRES_PASSWORD: ${USER_DB_PASSWORD:-pass}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${USER_DB_USERNAME} -d ${USER_DB_DBNAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   user-service:
     build:
@@ -99,9 +104,15 @@ services:
       POSTGRES_USER: ${COMPANY_DB_USERNAME:-user}
       POSTGRES_PASSWORD: ${COMPANY_DB_PASSWORD:-pass}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${COMPANY_DB_USERNAME} -d ${COMPANY_DB_DBNAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 
   company-service:
     build:
