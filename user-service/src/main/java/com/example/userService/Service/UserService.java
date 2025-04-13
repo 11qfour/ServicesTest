@@ -2,6 +2,7 @@ package com.example.userService.Service;
 
 import com.example.service_test_task.DTO.UserRequestDto;
 import com.example.service_test_task.DTO.UserResponseDto;
+import com.example.service_test_task.DTO.UserResponseFromCompanyDto;
 import com.example.userService.Client.CompanyClient;
 import com.example.userService.Entity.User;
 import com.example.userService.Exception.ResourceNotFoundException;
@@ -29,6 +30,12 @@ public class UserService {
         UserResponseDto userDto = userMapper.toDto(user);
         userDto.setCompany(companyClient.getCompanyById(userId));//make http request, although we could simply take the company from the user
         return userDto;
+    }
+
+    public List<UserResponseFromCompanyDto> getUsersByCompany(Long companyId) {
+        return userRepository.findByCompanyId(companyId).stream()
+                .map(userMapper::toDtoFromCompany)  // маппер из User -> UserResponseFromCompanyDto
+                .toList();
     }
 
     public List<UserResponseDto> getAllUsers(){

@@ -3,6 +3,7 @@ package com.example.userService.Controller;
 
 import com.example.service_test_task.DTO.UserRequestDto;
 import com.example.service_test_task.DTO.UserResponseDto;
+import com.example.service_test_task.DTO.UserResponseFromCompanyDto;
 import com.example.userService.Client.CompanyClient;
 import com.example.userService.Mapper.UserMapper;
 import com.example.userService.Service.UserService;
@@ -23,6 +24,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/company/{companyId}")
+    public List<UserResponseFromCompanyDto> getUsersByCompany(@PathVariable Long companyId) {
+        return userService.getUsersByCompany(companyId);
     }
 
     @GetMapping("/{userId}")
