@@ -6,6 +6,8 @@ spring:
         name: eureka-server
 
 eureka:
+    server:
+        wait-time-in-ms-when-sync-empty: 0
     instance:
         hostname: ${EUREKA_HOST:localhost}
     client:
