@@ -11,14 +11,14 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/**
+            - Path=/api/users/**
 
         - id: company-service
           uri: lb://COMPANY-SERVICE
           predicates:
-            - Path=/companies/**
+            - Path=/api/companies/**
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:eureka-server}:${EUREKA_PORT:8761}/eureka/
