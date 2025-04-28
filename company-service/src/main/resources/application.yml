@@ -26,4 +26,8 @@ eureka:
       defaultZone: http://${EUREKA_HOST:eureka-serve}:${EUREKA_PORT:8761}/eureka/
   instance:
     preferIpAddress: true
+logging:
+  level:
+    your:
+      package=INFO:
 

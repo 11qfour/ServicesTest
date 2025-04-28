@@ -11,21 +11,20 @@ import com.example.service_test_task.DTO.CompanyRequestDto;
 import com.example.service_test_task.DTO.CompanyResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
-    private static final Logger logger = LoggerFactory.getLogger(UserFeignLogger.class);
     private final UserClient userClient;
 
     public CompanyResponseDto getCompanyById(Long companyId) {
@@ -36,20 +35,23 @@ public class CompanyService {
         try {
             companyDto.setEmployees(userClient.getUsersByCompany(companyId));
         } catch (Exception e) {
-            logger.error("Failed to fetch users from user-service for company {}", companyId, e);
+            log.error("Failed to fetch users from user-service for company {}: {}", companyId, e.getMessage());
             companyDto.setEmployees(Collections.emptyList()); // fallback
         }
+        log.info("Returning company by id={}, result: {}", companyId, companyDto);
         return companyDto;
     }
 
     public List<CompanyResponseDto> getAllCompanies(){
-        return companyRepository.findAll()
+        List<CompanyResponseDto> result=companyRepository.findAll()
                 .stream()
                 .map(company->{
                     CompanyResponseDto dto = companyMapper.toDto(company);
                     dto.setEmployees(userClient.getUsersByCompany(company.getId()));
                     return dto;
                 }).collect(Collectors.toList());
+        log.info("Returning {} companies", result.size());
+        return result;
     }
 
     public CompanyResponseDto updateCompany(Long companyId, CompanyRequestDto companyRequestDto){
@@ -57,8 +59,9 @@ public class CompanyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
         companyMapper.updateCompanyFromDto(companyRequestDto, company);
         Company updatedCompany = companyRepository.save(company);
-
-        return companyMapper.toDto(updatedCompany);
+        CompanyResponseDto response = companyMapper.toDto(updatedCompany);
+        log.info("Updated company id={}, new data: {}", companyId, response);
+        return response;
     }
 
     public void deleteCompany(Long companyId){
@@ -69,9 +72,9 @@ public class CompanyService {
         try {
             userClient.deleteUsersByCompany(companyId);
         } catch (Exception e) {
-            logger.warn("Could not delete users from user-service for company {}", companyId, e);
+            log.warn("Could not delete users from user-service for company {}", companyId, e);
         }
-
+        log.info("Deleted company id={}", companyId);
         companyRepository.deleteById(companyId);
     }
 
@@ -81,6 +84,8 @@ public class CompanyService {
         }
         Company company = companyMapper.toEntity(companyRequestDto);
         var newCompany = companyRepository.save(company);
-        return companyMapper.toDto(newCompany);
+        CompanyResponseDto response = companyMapper.toDto(newCompany);
+        log.info("Created new company with id={}, name={}", response.getId(), response.getName());
+        return response;
     }
 }

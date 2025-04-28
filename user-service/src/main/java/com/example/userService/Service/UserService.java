@@ -10,11 +10,14 @@ import com.example.userService.Mapper.UserMapper;
 import com.example.userService.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
@@ -28,18 +31,25 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         UserResponseDto userDto = userMapper.toDto(user);
-        userDto.setCompany(companyClient.getCompanyById(userId));//make http request, although we could simply take the company from the user
+        try {
+            userDto.setCompany(companyClient.getCompanyById(userId));//make http request, although we could simply take the company from the user
+        } catch (Exception e) {
+            log.error("Failed to fetch company for user {}: {}",userId, e.getMessage());
+            new ResourceNotFoundException("Company not found or service unavailable");
+        }
         return userDto;
     }
 
     public List<UserResponseFromCompanyDto> getUsersByCompany(Long companyId) {
-        return userRepository.findByCompanyId(companyId).stream()
+        List<UserResponseFromCompanyDto> result=userRepository.findByCompanyId(companyId).stream()
                 .map(userMapper::toDtoFromCompany)  // маппер из User -> UserResponseFromCompanyDto
                 .toList();
+        log.info("Returning {} users by companyId: {}", result.size(), companyId);
+        return result;
     }
 
     public List<UserResponseDto> getAllUsers(){
-        return userRepository.findAll().stream()
+        List<UserResponseDto> result= userRepository.findAll().stream()
                 .map(user -> {
                     UserResponseDto dto = userMapper.toDto(user);
                     if (user.getCompanyId() != null) {
@@ -48,6 +58,8 @@ public class UserService {
                     return dto;
                 })
                 .toList();
+        log.info("Returning {} users by companyId", result.size());
+        return result;
     }
 
     public UserResponseDto updateUser(Long userId, UserRequestDto userRequestDto){ //if any field's is empty it willnot be changed
@@ -55,13 +67,16 @@ public class UserService {
                 .orElseThrow(()->new ResourceNotFoundException("User not found"));
         userMapper.updateUserFromDto(userRequestDto,user);
         User updatedUser = userRepository.save(user);
-        return userMapper.toDto(updatedUser);
+        UserResponseDto response = userMapper.toDto(updatedUser);
+        log.info("Updated user id={}, new data: {}", userId, response);
+        return response;
     }
 
     public void deleteUser(Long userId){
         if (!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("User not found");
         }
+        log.info("Deleted user id={}", userId);
         userRepository.deleteById(userId);
     }
 
@@ -83,6 +98,8 @@ public class UserService {
 
         User user = userMapper.toEntity((userRequestDto));
         var newUser = userRepository.save(user);
-        return userMapper.toDto(newUser);
+        UserResponseDto response = userMapper.toDto(newUser);
+        log.info("Created new user with id={}, name={} by companyId: {}", response.getId(), response.getFirstName(), userRequestDto.getCompanyId());
+        return response;
     }
 }
