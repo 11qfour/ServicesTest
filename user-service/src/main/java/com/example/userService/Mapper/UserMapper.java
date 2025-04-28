@@ -6,6 +6,7 @@ import com.example.service_test_task.DTO.UserResponseDto;
 import com.example.service_test_task.DTO.UserResponseFromCompanyDto;
 import com.example.userService.Entity.User;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface UserMapper {
     @Mapping(target = "company", ignore = true) // Company заполняется отдельно
     UserResponseDto toDto(User user);
     List<UserResponseDto> toDtoList(List<User> users);
-
+    List<UserResponseFromCompanyDto> toDtoFromCompanyList(List<User> users);
     UserResponseFromCompanyDto toDtoFromCompany(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

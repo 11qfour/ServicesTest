@@ -21,9 +21,10 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies(){
-        log.info("Get all companies");
-        List<CompanyResponseDto> companies = companyService.getAllCompanies();
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size){
+        log.info("Get all companies, page={}, size={}", page, size);
+        List<CompanyResponseDto> companies = companyService.getAllCompanies(page, size);
         return ResponseEntity.ok(companies);
     }
 

@@ -1,6 +1,7 @@
 package com.example.companyService.Entity;
 
 import com.example.service_test_task.DTO.UserResponseDto;
+import com.example.service_test_task.DTO.UserResponseFromCompanyDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -8,9 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -27,7 +26,8 @@ public class Company {
     private String name;
     @Column(nullable = false)
     private Long budget;
-
+    @Transient //not to create in DB
+    private List<UserResponseFromCompanyDto> employees = new ArrayList<>(); //Поле будет наполняться через REST-запросы к user-service
     @JsonIgnore
     public Long getId() {
         return id;

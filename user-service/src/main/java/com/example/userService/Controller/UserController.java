@@ -25,15 +25,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(){
-        log.info("Got all users");
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size){
+        log.info("Got all users, page={}, size={}", page, size);
+        return ResponseEntity.ok(userService.getAllUsers(page, size));
     }
 
     @GetMapping("/company/{companyId}")
-    public List<UserResponseFromCompanyDto> getUsersByCompany(@PathVariable Long companyId) {
-        log.info("Got company for user by ID: {}", companyId);
-        return userService.getUsersByCompany(companyId);
+    public List<UserResponseFromCompanyDto> getUsersByCompany(@PathVariable Long companyId,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+        log.info("Got users by companyId: {}, page={}, size={}", companyId, page, size);
+        return userService.getUsersByCompany(companyId,page, size);
     }
 
     @GetMapping("/{userId}")
